@@ -15,6 +15,17 @@ var StatusCodeMapping = map[string]int{
 	service_errors.UsernameOrPasswordInvalid: 401,
 	// Token
 	service_errors.InvalidRefreshToken: 401,
+	service_errors.TokenRequired:       401,
+	service_errors.TokenExpired:        401,
+	service_errors.TokenInvalid:        401,
+	service_errors.ClaimsNotFound:      401,
+	service_errors.InvalidRolesFormat:  400,
+	// OTP
+	service_errors.OptExists:   409,
+	service_errors.OtpUsed:     400,
+	service_errors.OtpNotValid: 400,
+	// Validation
+	service_errors.ValidationError: 400,
 }
 
 func TranslateErrorToStatusCode(err error) int {
