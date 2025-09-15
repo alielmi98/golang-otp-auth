@@ -7,7 +7,6 @@ import (
 	model "github.com/alielmi98/golang-otp-auth/internal/user/domain/models"
 	"github.com/alielmi98/golang-otp-auth/pkg/constants"
 	"github.com/alielmi98/golang-otp-auth/pkg/db"
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -70,25 +69,18 @@ func (r *PgRepo) Delete(ctx context.Context, id int) error {
 	return nil
 }
 
-func (r *PgRepo) FetchUserInfo(ctx context.Context, mobileNumber string, password string) (model.User, error) {
+func (r *PgRepo) GetUserByMobileNumber(ctx context.Context, mobileNumber string) (model.User, error) {
 	var user model.User
 	err := r.db.WithContext(ctx).
 		Model(&model.User{}).
-		Where(userFilterExp, mobileNumber).
 		Preload("UserRoles", func(tx *gorm.DB) *gorm.DB {
 			return tx.Preload("Role")
 		}).
-		Find(&user).Error
+		Where(userFilterExp, mobileNumber).First(&user).Error
 
 	if err != nil {
 		return user, err
 	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-	if err != nil {
-		return user, err
-	}
-
 	return user, nil
 }
 
