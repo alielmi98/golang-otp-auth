@@ -13,6 +13,15 @@ definitions:
     - mobileNumber
     - otp
     type: object
+  github_com_alielmi98_golang-otp-auth_internal_user_api_dto.SendOtpRequest:
+    properties:
+      mobile_number:
+        maxLength: 11
+        minLength: 11
+        type: string
+    required:
+    - mobile_number
+    type: object
   github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserInfo:
     properties:
       id:
@@ -172,17 +181,18 @@ paths:
       summary: RegisterLoginByMobileNumber
       tags:
       - Users
-  /v1/users/send-otp/{mobile_number}:
+  /v1/users/send-otp:
     post:
       consumes:
       - application/json
       description: Send otp to user
       parameters:
-      - description: Mobile number
-        in: path
-        name: mobile_number
+      - description: SendOtpRequest
+        in: body
+        name: Request
         required: true
-        type: string
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.SendOtpRequest'
       produces:
       - application/json
       responses:

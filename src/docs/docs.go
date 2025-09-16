@@ -116,7 +116,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/users/send-otp/{mobile_number}": {
+        "/v1/users/send-otp": {
             "post": {
                 "description": "Send otp to user",
                 "consumes": [
@@ -131,11 +131,13 @@ const docTemplate = `{
                 "summary": "Send otp to user",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "Mobile number",
-                        "name": "mobile_number",
-                        "in": "path",
-                        "required": true
+                        "description": "SendOtpRequest",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.SendOtpRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -222,6 +224,19 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 6,
                     "minLength": 6
+                }
+            }
+        },
+        "github_com_alielmi98_golang-otp-auth_internal_user_api_dto.SendOtpRequest": {
+            "type": "object",
+            "required": [
+                "mobile_number"
+            ],
+            "properties": {
+                "mobile_number": {
+                    "type": "string",
+                    "maxLength": 11,
+                    "minLength": 11
                 }
             }
         },

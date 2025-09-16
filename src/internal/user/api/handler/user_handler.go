@@ -19,8 +19,9 @@ type UsersHandler struct {
 
 func NewUserHandler(cfg *config.Config) *UsersHandler {
 	otpProvider := di.GetOtpProvider(cfg)
+	rateLimitService := di.GetOTPRateLimitService(cfg)
 	userUsecase := usecase.NewUserUsecase(cfg, di.GetUserRepository(cfg), di.GetTokenProvider(cfg), otpProvider)
-	otpUsecase := usecase.NewOtpUsecase(cfg, otpProvider)
+	otpUsecase := usecase.NewOtpUsecase(cfg, otpProvider, rateLimitService)
 	return &UsersHandler{usecase: userUsecase,
 		otpUsecase: otpUsecase}
 }
@@ -60,19 +61,21 @@ func (h *UsersHandler) RegisterLoginByMobileNumber(c *gin.Context) {
 // @Tags Users
 // @Accept  json
 // @Produce  json
-// @Param mobile_number path string true "Mobile number"
+// @Param Request body dto.SendOtpRequest true "SendOtpRequest"
 // @Success 201 {object} helper.BaseHttpResponse "Success"
 // @Failure 400 {object} helper.BaseHttpResponse "Failed"
 // @Failure 409 {object} helper.BaseHttpResponse "Failed"
-// @Router /v1/users/send-otp/{mobile_number} [post]
+// @Router /v1/users/send-otp [post]
 func (h *UsersHandler) SendOtp(c *gin.Context) {
-	mobileNumber := c.Param("mobile_number")
-	if mobileNumber == "" {
+	req := new(dto.SendOtpRequest)
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest,
-			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, nil))
+			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))
 		return
 	}
-	err := h.otpUsecase.SendOtp(mobileNumber)
+
+	err = h.otpUsecase.SendOtp(req.MobileNumber)
 	if err != nil {
 		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))

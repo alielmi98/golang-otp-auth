@@ -204,14 +204,17 @@ Authorization: Bearer <your-jwt-token>
 ### API Endpoints
 
 #### 1. Send OTP
-**POST** `/users/send-otp/{mobile_number}`
+**POST** `/users/send-otp`
 
 Sends an OTP to the specified mobile number.
 
 **Request:**
 ```bash
-curl -X POST "http://localhost:5005/api/v1/users/send-otp/09123456789" \
-  -H "Content-Type: application/json"
+curl -X POST "http://localhost:5005/api/v1/users/send-otp" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "mobile_number": "09123456789"
+  }'
 ```
 
 **Response:**
@@ -424,7 +427,9 @@ otp:
 
 1. **Send OTP:**
 ```bash
-curl -X POST "http://localhost:5005/api/v1/users/send-otp/09123456789"
+curl -X POST "http://localhost:5005/api/v1/users/send-otp" \
+  -H "Content-Type: application/json" \
+  -d '{"mobile_number": "09123456789"}'
 ```
 
 2. **Login with OTP:**

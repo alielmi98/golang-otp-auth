@@ -7,7 +7,9 @@ import (
 	infraAuth "github.com/alielmi98/golang-otp-auth/internal/user/infra/auth"
 	infraAuthRepo "github.com/alielmi98/golang-otp-auth/internal/user/infra/repository"
 
+	"github.com/alielmi98/golang-otp-auth/pkg/cache"
 	"github.com/alielmi98/golang-otp-auth/pkg/config"
+	"github.com/alielmi98/golang-otp-auth/pkg/ratelimit"
 )
 
 // midedlewares
@@ -21,4 +23,12 @@ func GetUserRepository(cfg *config.Config) contractAuthRepo.UserRepository {
 
 func GetOtpProvider(cfg *config.Config) contractAuth.OtpProvider {
 	return infraAuth.NewOtpProvider(cfg)
+}
+
+// GetOTPRateLimitService creates and returns OTP rate limiting service
+func GetOTPRateLimitService(cfg *config.Config) *ratelimit.OTPRateLimitService {
+	redisClient := cache.GetRedis()
+	rateLimiter := ratelimit.NewRedisRateLimiter(redisClient)
+	config := ratelimit.DefaultOTPConfig()
+	return ratelimit.NewOTPRateLimitService(rateLimiter, config)
 }

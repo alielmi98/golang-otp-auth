@@ -10,6 +10,9 @@ type RegisterLoginByMobileRequest struct {
 	Otp          string `json:"otp" binding:"required,min=6,max=6"`
 }
 
+type SendOtpRequest struct {
+	MobileNumber string `json:"mobile_number" binding:"required,mobile,min=11,max=11"`
+}
 type UserInfo struct {
 	ID           int       `json:"id"`
 	MobileNumber string    `json:"mobile_number"`
