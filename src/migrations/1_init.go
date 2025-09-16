@@ -4,8 +4,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/alielmi98/golang-otp-auth/internal/user/constants"
 	"github.com/alielmi98/golang-otp-auth/internal/user/domain/models"
+	"github.com/alielmi98/golang-otp-auth/pkg/constants"
 	"github.com/alielmi98/golang-otp-auth/pkg/db"
 	"gorm.io/gorm"
 )

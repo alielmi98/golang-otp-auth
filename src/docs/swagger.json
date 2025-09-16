@@ -1,0 +1,305 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/v1/users": {
+            "get": {
+                "description": "Get users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get users",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Mobile number filter",
+                        "name": "mobile_number",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserList"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/login-by-mobile": {
+            "post": {
+                "description": "RegisterLoginByMobileNumber",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "RegisterLoginByMobileNumber",
+                "parameters": [
+                    {
+                        "description": "RegisterLoginByMobileRequest",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.RegisterLoginByMobileRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/send-otp/{mobile_number}": {
+            "post": {
+                "description": "Send otp to user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Send otp to user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Mobile number",
+                        "name": "mobile_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/users/{mobile_number}": {
+            "get": {
+                "description": "Get user by mobile number",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user by mobile number",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Mobile number",
+                        "name": "mobile_number",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_alielmi98_golang-otp-auth_internal_user_api_dto.RegisterLoginByMobileRequest": {
+            "type": "object",
+            "required": [
+                "mobileNumber",
+                "otp"
+            ],
+            "properties": {
+                "mobileNumber": {
+                    "type": "string",
+                    "maxLength": 11,
+                    "minLength": 11
+                },
+                "otp": {
+                    "type": "string",
+                    "maxLength": 6,
+                    "minLength": 6
+                }
+            }
+        },
+        "github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "mobile_number": {
+                    "type": "string"
+                },
+                "registered_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserList": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserInfo"
+                    }
+                }
+            }
+        },
+        "github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse": {
+            "type": "object",
+            "properties": {
+                "error": {},
+                "result": {},
+                "resultCode": {
+                    "$ref": "#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.ResultCode"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "github_com_alielmi98_golang-otp-auth_pkg_helper.ResultCode": {
+            "type": "integer",
+            "enum": [
+                0,
+                40001,
+                40101,
+                40301,
+                40401,
+                42901,
+                42902,
+                50001,
+                50002,
+                50003,
+                50004,
+                50005,
+                40002
+            ],
+            "x-enum-varnames": [
+                "Success",
+                "ValidationError",
+                "AuthError",
+                "ForbiddenError",
+                "NotFoundError",
+                "LimiterError",
+                "OtpLimiterError",
+                "CustomRecovery",
+                "InternalError",
+                "InvalidInputError",
+                "DatabaseError",
+                "UnknownError",
+                "BadRequest"
+            ]
+        }
+    },
+    "securityDefinitions": {
+        "AuthBearer": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

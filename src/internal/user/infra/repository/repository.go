@@ -84,19 +84,25 @@ func (r *PgRepo) GetUserByMobileNumber(ctx context.Context, mobileNumber string)
 	return user, nil
 }
 
-func (r *PgRepo) GetAllUsers(ctx context.Context) ([]model.User, error) {
+func (r *PgRepo) GetAllUsers(ctx context.Context, page, pageSize int, mobileNumber string) ([]model.User, int, error) {
+	offset := (page - 1) * pageSize
 	var users []model.User
-	err := r.db.WithContext(ctx).
-		Model(&model.User{}).
-		Preload("UserRoles", func(tx *gorm.DB) *gorm.DB {
-			return tx.Preload("Role")
-		}).
-		Find(&users).Error
+	var total int64
 
-	if err != nil {
-		return users, err
+	query := r.db.WithContext(ctx).Model(&model.User{})
+	if mobileNumber != "" {
+		query = query.Where("mobile_number LIKE ?", "%"+mobileNumber+"%")
 	}
-	return users, nil
+
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	if err := query.Offset(offset).Limit(pageSize).Find(&users).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return users, int(total), nil
 }
 
 func (r *PgRepo) GetDefaultRole(ctx context.Context) (roleId int, err error) {
@@ -108,4 +114,35 @@ func (r *PgRepo) GetDefaultRole(ctx context.Context) (roleId int, err error) {
 		return 0, err
 	}
 	return roleId, nil
+}
+
+func (r *PgRepo) FetchUserInfo(ctx context.Context, mobileNumber string) (model.User, error) {
+	var user model.User
+	err := r.db.WithContext(ctx).
+		Model(&model.User{}).
+		Where(userFilterExp, mobileNumber).
+		Preload("UserRoles", func(tx *gorm.DB) *gorm.DB {
+			return tx.Preload("Role")
+		}).
+		Find(&user).Error
+
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func (r *PgRepo) ExistsMobileNumber(ctx context.Context, mobileNumber string) (bool, error) {
+	var exists bool
+	if err := r.db.WithContext(ctx).Model(&model.User{}).
+		Select(countFilterExp).
+		Where("mobile_number = ?", mobileNumber).
+		Find(&exists).
+		Error; err != nil {
+		log.Printf("Caller:%s Level:%s Msg:%s", constants.Postgres, constants.Select, err.Error())
+
+		return false, err
+	}
+	return exists, nil
 }

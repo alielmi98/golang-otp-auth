@@ -11,6 +11,8 @@ type UserRepository interface {
 	Update(ctx context.Context, id int, user *model.User) error
 	Delete(ctx context.Context, id int) error
 	GetUserByMobileNumber(ctx context.Context, mobileNumber string) (model.User, error)
-	GetAllUsers(ctx context.Context) ([]model.User, error)
+	GetAllUsers(ctx context.Context, page, pageSize int, mobileNumber string) ([]model.User, int, error)
 	GetDefaultRole(ctx context.Context) (roleId int, err error)
+	ExistsMobileNumber(ctx context.Context, mobileNumber string) (bool, error)
+	FetchUserInfo(ctx context.Context, mobileNumber string) (model.User, error)
 }

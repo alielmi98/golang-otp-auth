@@ -12,3 +12,8 @@ type TokenProvider interface {
 	GetClaims(token string) (map[string]interface{}, error)
 	RefreshToken(refreshToken string) (*dto.TokenDetail, error)
 }
+
+type OtpProvider interface {
+	SetOtp(mobileNumber string, otp string) error
+	ValidateOtp(mobileNumber string, otp string) error
+}

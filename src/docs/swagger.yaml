@@ -1,0 +1,209 @@
+definitions:
+  github_com_alielmi98_golang-otp-auth_internal_user_api_dto.RegisterLoginByMobileRequest:
+    properties:
+      mobileNumber:
+        maxLength: 11
+        minLength: 11
+        type: string
+      otp:
+        maxLength: 6
+        minLength: 6
+        type: string
+    required:
+    - mobileNumber
+    - otp
+    type: object
+  github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserInfo:
+    properties:
+      id:
+        type: integer
+      mobile_number:
+        type: string
+      registered_at:
+        type: string
+    type: object
+  github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserList:
+    properties:
+      page:
+        type: integer
+      page_size:
+        type: integer
+      total:
+        type: integer
+      users:
+        items:
+          $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserInfo'
+        type: array
+    type: object
+  github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse:
+    properties:
+      error: {}
+      result: {}
+      resultCode:
+        $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.ResultCode'
+      success:
+        type: boolean
+    type: object
+  github_com_alielmi98_golang-otp-auth_pkg_helper.ResultCode:
+    enum:
+    - 0
+    - 40001
+    - 40101
+    - 40301
+    - 40401
+    - 42901
+    - 42902
+    - 50001
+    - 50002
+    - 50003
+    - 50004
+    - 50005
+    - 40002
+    type: integer
+    x-enum-varnames:
+    - Success
+    - ValidationError
+    - AuthError
+    - ForbiddenError
+    - NotFoundError
+    - LimiterError
+    - OtpLimiterError
+    - CustomRecovery
+    - InternalError
+    - InvalidInputError
+    - DatabaseError
+    - UnknownError
+    - BadRequest
+info:
+  contact: {}
+paths:
+  /v1/users:
+    get:
+      consumes:
+      - application/json
+      description: Get users
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: page_size
+        type: integer
+      - description: Mobile number filter
+        in: query
+        name: mobile_number
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserList'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+        "409":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+      summary: Get users
+      tags:
+      - Users
+  /v1/users/{mobile_number}:
+    get:
+      consumes:
+      - application/json
+      description: Get user by mobile number
+      parameters:
+      - description: Mobile number
+        in: path
+        name: mobile_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.UserInfo'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+        "409":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+      summary: Get user by mobile number
+      tags:
+      - Users
+  /v1/users/login-by-mobile:
+    post:
+      consumes:
+      - application/json
+      description: RegisterLoginByMobileNumber
+      parameters:
+      - description: RegisterLoginByMobileRequest
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_internal_user_api_dto.RegisterLoginByMobileRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+        "409":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+      summary: RegisterLoginByMobileNumber
+      tags:
+      - Users
+  /v1/users/send-otp/{mobile_number}:
+    post:
+      consumes:
+      - application/json
+      description: Send otp to user
+      parameters:
+      - description: Mobile number
+        in: path
+        name: mobile_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Success
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+        "400":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+        "409":
+          description: Failed
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_golang-otp-auth_pkg_helper.BaseHttpResponse'
+      summary: Send otp to user
+      tags:
+      - Users
+securityDefinitions:
+  AuthBearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
