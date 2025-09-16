@@ -27,7 +27,7 @@ services:
     networks:
       - webapi_network
     restart: unless-stopped
-
+    
 
   ####################### REDIS #######################
   redis:

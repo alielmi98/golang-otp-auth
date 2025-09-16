@@ -34,6 +34,7 @@ type PostgresConfig struct {
 	MaxIdleConns    int
 	MaxOpenConns    int
 	ConnMaxLifetime time.Duration
+	TimeZone        string
 }
 
 type RedisConfig struct {
